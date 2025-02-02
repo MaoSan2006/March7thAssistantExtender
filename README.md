@@ -1,6 +1,6 @@
 # March7thAssistantDLC
 March7thAssistantDLC(拓展功能)
-##### 目前时间只够测试2K分辨率，如需要其他分辨率运行，请自行调整imgs文件夹内图片
+##### 目前时间只够测试1080P分辨率(需要游戏内手动设置1920*1080)，如需要其他分辨率运行，请自行调整imgs文件夹内图片
 ### 此程序依赖March7thAssistant
 ### 请下载March7thAssistant后再设置本软件config.yaml
 ### 需要自行设置为管理员身份运行
