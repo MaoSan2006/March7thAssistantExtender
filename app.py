@@ -79,7 +79,7 @@ def main_game_auto_update():
             return False
         os.startfile(mhy_launcher_path)
         #检测启动器页面是否显示
-        if process("imgs/launcher_icro.png",10,0.7,"move","米哈游启动器图标")==False:
+        if process("imgs/launcher_icro.png",30,0.7,"move","米哈游启动器图标")==False:
             return False
         if process("imgs/launcher_update.png",1,0.95,"click","米哈游启动器更新并重启")==True:
             if process("imgs/launcher_icro.png",60,0.95,"move","米哈游启动器图标")==True:
