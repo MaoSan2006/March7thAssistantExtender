@@ -14,5 +14,5 @@ March7thAssistantDLC(拓展功能)
 ## 功能简介
 
 - **功能1**：自动更新游戏(**完成**)
-- **功能2**：多号切换(**开发中**)
+- **功能2**：多号切换(**完成**)
 - **功能3**：敬请期待(可在Issues中提出)(https://github.com/MaoSan2006/March7thAssistantDLC/issues)
