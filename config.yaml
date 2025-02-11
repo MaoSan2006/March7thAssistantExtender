@@ -1,7 +1,11 @@
 #####关键设置#####
-log_level: "INFO" #日志等级[DEBUG/INFO]
-March7thAssistant_path: "D:/StarRailTools/March7thAssistant/March7th Assistant.exe" #三月七助手控制台路径
-mhy_launcher_path: "D:/MiHoYo/miHoYo Launcher/launcher.exe" #米哈游启动器路径
+log_level: "DEBUG" #日志等级[DEBUG/INFO]
+March7thAssistant_path: "D:/StarRailTools/March7thAssistant/March7th Assistant.exe" #三月七助手控制台路径（需包含March7th Assistant.exe）
+mhy_launcher_path: "D:/MiHoYo/miHoYo Launcher/launcher.exe" #米哈游启动器路径（需包含launcher.exe）
+over_control: "poweroff" #完成后要做什么["poweroff","None"]
 #####游戏——更新#####
-game_update: True #是否更新游戏[True/False]
-game_update_run_march7thAssistant: True #是否更新后运行三月七助手[True/False] 
+game_update: False #是否更新游戏[True/False]
+game_update_run_march7thAssistant: False #是否更新后运行三月七助手[True/False] 
+#####多号协同(如果有多个账号)#####
+multi_account: True #是否开启多号协同[True/False]
+starrail_path: "D:/MiHoYo/miHoYo Launcher/games/Star Rail Game/StarRail.exe" #崩铁游戏路径（需包含StarRail.exe）
