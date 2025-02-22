@@ -5,7 +5,7 @@
 [点击跳转至March7thAssistant原项目](https://github.com/moesnow/March7thAssistant)
 # 作者的话
 我是浙江的高三学生，因学业问题不能及时更新和修复bug，如果疑问，请提交到Issues中
-测试时间不多，bugye
+测试时间不多，bug
 PS:已经报名高职提前招，预计4月中旬就可以有时间折腾
 #项目后续计划及其已有功能
 ##游戏部分
