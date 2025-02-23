@@ -1,11 +1,13 @@
-#####关键设置#####
-log_level: "DEBUG" #日志等级[DEBUG/INFO]
-March7thAssistant_path: "D:/StarRailTools/March7thAssistant/March7th Assistant.exe" #三月七助手控制台路径（需包含March7th Assistant.exe）
-mhy_launcher_path: "D:/MiHoYo/miHoYo Launcher/launcher.exe" #米哈游启动器路径（需包含launcher.exe）
-over_control: "poweroff" #完成后要做什么["poweroff","None"]
-#####游戏——更新#####
-game_update: False #是否更新游戏[True/False]
-game_update_run_march7thAssistant: False #是否更新后运行三月七助手[True/False] 
-#####多号协同(如果有多个账号)#####
-multi_account: True #是否开启多号协同[True/False]
-starrail_path: "D:/MiHoYo/miHoYo Launcher/games/Star Rail Game/StarRail.exe" #崩铁游戏路径（需包含StarRail.exe）
+#关键设置
+version :  "V2025.02.23" #版本号
+log_level : "DEBUG" #日志等级[详细DEBUG/简略INFO]
+March7thAssistant_path : "D:/StarRailTools/March7thAssistant/" #三月七助手控制台所在路径
+mhy_launcher_path : "D:/MiHoYo/miHoYo Launcher/" #米哈游启动器路径
+StarRail_path : "D:/MiHoYo/miHoYo Launcher/games/Star Rail Game/" #崩铁游戏路径
+over_control : "poweroff" #完成后要做什么[60s后关机"poweroff",无操作"None"]
+#常规设置
+game_auto_update : True #是否自动更新游戏[开启True/关闭False]
+timeout : 3600 #每个账号三月七助手运行最大时间（秒）（每10秒检测一次，推荐为10的倍数）
+#游戏功能
+mode_account_mode: True #多账户模式[True]/单账户模式[False]
+tp_recovery : True #是否开启锚点回血[开启True/关闭False]
