@@ -1,5 +1,12 @@
 # -*- coding: utf-8 -*-
-####################导入运行库和切换目录####################
+print("+----------------------------------------------------------------------------------------------------------------------+")
+print("|                                       欢迎使用 March7th Assistant Extender                                           |")
+print("|                          March7thAssistant链接：https://github.com/moesnow/March7thAssistant                         |")
+print("|                March7thAssistantExtender链接：https://github.com/MaoSan2006/March7thAssistantExtender                |")
+print("|                                     此程序遵循GPL3.0开源协议，转载请注明出处！                                       |")
+print("+----------------------------------------------------------------------------------------------------------------------+")
+print("正在加载运行库，请稍后......")
+#导入运行库和切换目录
 import os
 import yaml
 import cv2
@@ -19,10 +26,11 @@ import psutil
 import shutil
 from PIL import Image, ImageFilter
 os.chdir(os.path.dirname(sys.executable) if getattr(sys, 'frozen', False)else os.path.dirname(os.path.abspath(__file__)))
-####################当前时间####################
+print("运行库加载完成")
+#当前时间
 def nowtime():
     return time.strftime("%Y%m%d",time.localtime())
-####################设置日志####################
+#设置日志格式
 log_file_path = os.path.join("log", nowtime() + ".log")
 logging.basicConfig(
     level=logging.INFO,
@@ -33,7 +41,7 @@ logging.basicConfig(
     ]
 )
 logging.getLogger('PIL').setLevel(logging.WARNING)    
-####################读取config.yaml文件中的key参数####################
+#读取config.yaml文件中的key参数
 def get_config(key):
     try:
         with open('config.yaml','r',encoding='utf-8') as file:
@@ -52,13 +60,13 @@ def get_config(key):
     except Exception as error_exception:
         logging.error(f"未知错误")
         return None
-####################标记每个账号状态####################
+#标记每个账号状态
 def mark_over_account(id,state):
     file=pandas.read_excel('account.xlsx')
     file.at[id,nowtime()]=state
     file.to_excel('account.xlsx',index=False)
     return file
-####################检查今天日期存入####################
+#检查今天日期存入
 def check_date(file):
     if nowtime() not in file.columns:
         logging.info('检测到今日首次运行')
@@ -67,7 +75,7 @@ def check_date(file):
         file.to_excel('account.xlsx', index=False)
         return file
     return file
-####################查找进程(通过进程名)####################
+#查找进程(通过进程名)
 def find_process(process_name):
     for proc in psutil.process_iter():
         try:
@@ -76,7 +84,7 @@ def find_process(process_name):
         except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
             pass
     return False
-####################结束进程(通过进程名)####################
+#结束进程(通过进程名)
 def kill_process(process_name):
     try:
         subprocess.Popen(["taskkill", "/f", "/im", process_name])
@@ -85,7 +93,7 @@ def kill_process(process_name):
     except:
         logging.error(f"结束进程{process_name}失败")
         return False
-####################仿真操作####################
+#仿真操作
 def process(image_path,timeout,control,confidence=0.95,more_control_time=0,more_control_sleep=0):
     start_time=time.time()
     image=image_path
@@ -93,13 +101,13 @@ def process(image_path,timeout,control,confidence=0.95,more_control_time=0,more_
     while True:
         try:
             location=pyautogui.center(pyautogui.locateOnScreen(Image.open(image),confidence=confidence))
-            if location=='click':
+            if control=='click':
                 pyautogui.click(location)
                 while more_control_time>0:
                     time.sleep(more_control_sleep)
                     more_control_time-=1
                     pyautogui.click(location)
-            elif location=='move':
+            elif control=='move':
                 pyautogui.moveTo(location)
                 while more_control_time>0:
                     time.sleep(more_control_sleep)
@@ -115,14 +123,14 @@ def process(image_path,timeout,control,confidence=0.95,more_control_time=0,more_
                 break
     logging.debug(f"未找到{image_path}")
     return False
-####################月卡领取####################
+#月卡领取
 def month_card():
     if process("image/month_card/monthly_card.png",10,"click",confidence=0.8,more_control_time=1,more_control_sleep=5)==True:
         logging.info(f"识别到月卡领取界面")
     else:
         logging.error(f"月卡未订阅")
         return False
-####################锚点回血####################
+#锚点回血
 def tp_recovery():
     error_time=0
     while error_time<=30:
@@ -150,7 +158,25 @@ def tp_recovery():
         elif process("image/tp_recovery/clt.png",0.2,"click",confidence=0.9)==True:
             logging.info(f"选择长乐天")
     return False
-####################自动更新游戏####################
+#运行三月七助手前操作
+def pre_march7th():
+    error_time=0
+    while True:
+        if error_time>=60:
+            logging.error(f"运行三月七助手前操作超时")
+            return False
+        elif process("image/pre_march7th/month_card_title.png",0.5,""):
+            logging.info(f"已订阅月卡，正在领取")
+            month_card()
+        elif process("image/pre_march7th/mobile.png",0.5,"") or process("image/pre_march7th/mobile_red.png",0.5,""):
+            logging.info(f"已进入游戏页面")
+            if get_config("tp_recovery")==True:
+                logging.info(f"开始锚点回血")
+                tp_recovery()
+            return True
+        else:
+            error_time+=1
+#自动更新游戏
 def main_game_auto_update():
     logging.info("---------------------------------游戏自动更新------------------------------------------")
     try:
@@ -255,7 +281,7 @@ def main_game_auto_update():
     else:
         logging.error(f"游戏已经是最新版本了,无需更新!")
         return False
-####################多账户模式####################
+#多账户模式
 def main_switch_account():
     logging.info("------------------------------开始多账号模式---------------------------------------")
     file=pandas.read_excel("account.xlsx")
@@ -278,7 +304,10 @@ def main_switch_account():
                 error_time=0
                 logging.info(f"退出当前账号")
                 if process("image/more_account_mode/logout_confirm.png",3,"click")==True:
-                    logging.info(f"已退出当前账号")
+                    logging.info(f"确认退出账号")
+                else:
+                    logging.error(f"确认退出账号超时")
+                    return False
             elif process("image/more_account_mode/login_other_account.png",0.5,"click")==True:
                 error_time=0
                 logging.info(f"登录其他账号")
@@ -328,13 +357,7 @@ def main_switch_account():
             else:
                 error_time+=1
         time.sleep(10)
-        #月卡领取(暂时不可用)
-        '''
-        month_card()
-        '''
-        #锚点传送
-        if get_config("tp_recovery")==True:
-            tp_recovery()
+        pre_march7th()
         #切换用户设置
         logging.info(f"切换用户设置")
         user_config_path=os.path.join(os.getcwd(),"user_config",f"{account}.yaml")
@@ -368,7 +391,7 @@ def main_switch_account():
             file=mark_over_account(id,"超时")
             break
     logging.info(f"------------------------------------------------")
-####################主程序####################
+#主程序
 if __name__ == "__main__":
     #设置日志等级
     if get_config("log_level")=="DEBUG":
@@ -391,6 +414,7 @@ if __name__ == "__main__":
         main_switch_account()
     elif get_config("mode_account_mode")==False:
         logging.info("账号运行类别：单账号模式")
+        logging.info("单账号模式暂时不可用")
     else:
         logging.error("账号运行类别错误")
     #完成后操作
@@ -398,3 +422,5 @@ if __name__ == "__main__":
         logging.info("60秒后关机")
         time.sleep(60)
         os.system("shutdown -s -t 0")
+    elif get_config("over_control")=="":
+        sys.exit(0)
