@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 print("+----------------------------------------------------------------------------------------------------------------------+")
-print("|                                                版本V2025.04.05                                                       |")
 print("|                                       欢迎使用 March7th Assistant Extender                                           |")
 print("|                          March7thAssistant链接：https://github.com/moesnow/March7thAssistant                         |")
 print("|                March7thAssistantExtender链接：https://github.com/MaoSan2006/March7thAssistantExtender                |")
@@ -139,10 +138,9 @@ def tp_recovery():
         if error_time==30:
             break
         #打开地图
-        elif process("image/tp_recovery/tp_map1.png",0.2,"",confidence=0.9)==False and process("image/tp_recovery/tp_map2.png",0.2,"",confidence=0.9)==False:
+        elif process("image/tp_recovery/tp_map1.png",0.2,"click",confidence=0.9)==False and process("image/tp_recovery/tp_map2.png",0.2,"click",confidence=0.9)==False:
             logging.info(f"打开地图")
             pyautogui.typewrite("m")
-            time.sleep(1.5)
         #终末视界关闭
         elif process("image/tp_recovery/end_visit.png",0.2,"click",confidence=0.9)==True:
             logging.info(f"关闭终末视界")
@@ -153,18 +151,12 @@ def tp_recovery():
         elif process("image/tp_recovery/tp.png",0.2,"click",confidence=0.9)==True:
             logging.info(f"传送")
             return True
-        #选择罗浮地图
-        elif process("image/tp_recovery/luofu.png",0.2,"click",confidence=0.9)==True:
-            logging.info(f"选择罗浮地图")
-            time.sleep(3)
-        #选择长乐天
-        elif process("image/tp_recovery/clt.png",0.2,"click",confidence=0.9)==True:
-            logging.info(f"选择长乐天")
-            time.sleep(1)
         #打开星轨地图
         elif process("image/tp_recovery/star_map1.png",0.2,"click",confidence=0.9)==True or process("image/tp_recovery/star_map2.png",0.2,"click",confidence=0.9)==True:
             logging.info(f"打开星轨地图")
-            time.sleep(3)
+        #选择长乐天
+        elif process("image/tp_recovery/clt.png",0.2,"click",confidence=0.9)==True:
+            logging.info(f"选择长乐天")
     return False
 #运行三月七助手前操作
 def pre_march7th():
@@ -173,7 +165,7 @@ def pre_march7th():
         if error_time>=60:
             logging.error(f"运行三月七助手前操作超时")
             return False
-        elif process("image/pre_march7th/monthly_card.png",0.5,""):
+        elif process("image/pre_march7th/month_card_title.png",0.5,""):
             logging.info(f"已订阅月卡，正在领取")
             month_card()
         elif process("image/pre_march7th/mobile.png",0.5,"") or process("image/pre_march7th/mobile_red.png",0.5,""):
@@ -184,22 +176,6 @@ def pre_march7th():
             return True
         else:
             error_time+=1
-#运行三月七助手后操作
-def end_march7th(id,state):
-    if state=="完成":
-        mark_over_account(id,"完成")
-        kill_process("March7th Assistant.exe")
-        kill_process("PaddleOCR-json.exe")
-    elif state=="超时":
-        mark_over_account(id,"超时")
-        kill_process("StarRail.exe")
-        kill_process("March7th Assistant.exe")
-        kill_process("PaddleOCR-json.exe")
-    elif state=="顶号":
-        mark_over_account(id,"顶号")
-        kill_process("StarRail.exe")
-        kill_process("March7th Assistant.exe")
-        kill_process("PaddleOCR-json.exe")
 #自动更新游戏
 def main_game_auto_update():
     logging.info("---------------------------------游戏自动更新------------------------------------------")
@@ -395,18 +371,25 @@ def main_switch_account():
         os.startfile(str(get_config("March7thAssistant_path"))+"March7th Assistant.exe")
         while time.time()-start_time<=timeout:
             if find_process("StarRail.exe")==False:
-                logging.info(f"完成任务")
-                end_march7th(id,"完成")
+                kill_process("March7th Assistant.exe")
+                kill_process("PaddleOCR-json.exe")
+                file=mark_over_account(id,"完成")
                 break
-            elif process("image/more_account_mode/login_other_device.png",1,"")==True:
+            elif process("image/more_account_mode/login.other_device.png",1,"")==True:
                 logging.info(f"当前账号在其他设备登录")
-                end_march7th(id,"顶号")
+                kill_process("StarRail.exe")
+                kill_process("March7th Assistant.exe")
+                kill_process("PaddleOCR-json.exe")
+                file=mark_over_account(id,"顶号")
                 break
             else:
                 time.sleep(10)
         else:
-            logging.info(f"运行超时")
-            end_march7th(id,"超时")
+            kill_process("StarRail.exe")
+            kill_process("March7th Assistant.exe")
+            kill_process("PaddleOCR-json.exe")
+            file=mark_over_account(id,"超时")
+            break
     logging.info(f"------------------------------------------------")
 #主程序
 if __name__ == "__main__":
