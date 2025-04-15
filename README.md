@@ -1,11 +1,13 @@
 # March7thAssistantExtender(三月七助手拓展包)
 - 本程序作为[三月七助手(March7thAssistant)](https://github.com/moesnow/March7thAssistant)的拓展包
 - 需要下载原版并在本程序的`comfig.yaml`里进行设置绑定路径
-# 我应该怎么去使用
+# 怎么使用
 - [下载最新版本](https://github.com/MaoSan2006/March7thAssistantExtender/releases)
 - 解压到电脑上
 - 打开`config.yaml`,把`必要设置`的设置一下
 - 打开`account.xlsx`,把`账号密码`填写进去，保存
+- 打开`March7thAssistant`把对应账号的配置文件`config.yaml`设置好
+- 把上面的`config.yaml`复制到本应用的`user_config`中并重命名为`账号.yaml`（例如账号是123@email.com，就重命名为123@email.com.yaml）
 - 运行`March7thAssistantExtender.exe`
 # 注意事项
 - 需要手动调整游戏内`分辨率`为`1920X1080`
