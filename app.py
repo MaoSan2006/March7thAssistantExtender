@@ -1,38 +1,37 @@
 # -*- coding: utf-8 -*-
 print("+----------------------------------------------------------------------------------------------------------------------+")
-print("|                                                版本V2025.04.09                                                       |")
+print("|                                                版本V2025.04.29                                                       |")
 print("|                                       欢迎使用 March7th Assistant Extender                                           |")
 print("|                          March7thAssistant链接：https://github.com/moesnow/March7thAssistant                         |")
 print("|                March7thAssistantExtender链接：https://github.com/MaoSan2006/March7thAssistantExtender                |")
 print("|                                     此程序遵循GPL3.0开源协议，转载请注明出处！                                       |")
 print("+----------------------------------------------------------------------------------------------------------------------+")
 print("正在加载运行库，请稍后......")
-#导入运行库和切换目录
+#导入第三方运行库和切换目录
 import os
 import yaml
-import cv2
 import pyautogui
 import time
 import logging
 import subprocess
-import requests
 import sys
-import pytesseract
-import re
-import pyuac
-import pyscreeze
 import pandas
-import openpyxl
 import psutil
 import shutil
-from PIL import Image, ImageFilter
+import winreg
+from PIL import Image
+#导入定制运行库
+from task.get_config import get_config
+from task.process_excel import process_excel
+from task.reg_handler import reg_handler
 os.chdir(os.path.dirname(sys.executable) if getattr(sys, 'frozen', False)else os.path.dirname(os.path.abspath(__file__)))
 print("运行库加载完成")
 #当前时间
 def nowtime():
-    return time.strftime("%Y%m%d",time.localtime())
+    return time.strftime("%Y%m%d", time.localtime())
+
 #设置日志格式
-log_file_path = os.path.join("log", nowtime() + ".log")
+log_file_path = os.path.join("log", nowtime()+ ".log")
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s | %(levelname)s | %(message)s',
@@ -41,41 +40,25 @@ logging.basicConfig(
         logging.FileHandler(log_file_path)
     ]
 )
-logging.getLogger('PIL').setLevel(logging.WARNING)    
-#读取config.yaml文件中的key参数
-def get_config(key):
-    try:
-        with open('config.yaml','r',encoding='utf-8') as file:
-            config=yaml.safe_load(file)
-            return config.get(key)
-    except FileNotFoundError:
-        logging.error(f"未找到config.yaml文件,请检查是否存在或压缩包是否提取完整")
-        return None
-    except yaml.YAMLError as error_yaml:
-        logging.error(f"YAML库错误")
-        print(f"{error_yaml}")
-        return None
-    except KeyError as error_key:
-        logging.error(f"config.yaml文件中未找到{key}参数")
-        return None
-    except Exception as error_exception:
-        logging.error(f"未知错误")
-        return None
+logging.getLogger('PIL').setLevel(logging.WARNING)
+
 #标记每个账号状态
 def mark_over_account(id,state):
     file=pandas.read_excel('account.xlsx')
-    file.at[id,nowtime()]=state
-    file.to_excel('account.xlsx',index=False)
+    file.at[id, nowtime()] = state
+    file.to_excel('account.xlsx', index=False)
     return file
+
 #检查今天日期存入
-def check_date(file):
+def check_date():
+    file=pandas.read_excel('account.xlsx')
     if nowtime() not in file.columns:
-        logging.info('检测到今日首次运行')
-        logging.info(f'正在写入今日日期({nowtime()})到account.xlsx文件中')
-        file.insert(len(file.columns),nowtime(),"")
+        logging.info('今日首次运行')
+        logging.debug(f'正在写入今日日期({nowtime()})到account.xlsx文件中')
+        file.insert(len(file.columns), nowtime(), "")
         file.to_excel('account.xlsx', index=False)
-        return file
-    return file
+        return 
+
 #查找进程(通过进程名)
 def find_process(process_name):
     for proc in psutil.process_iter():
@@ -85,6 +68,7 @@ def find_process(process_name):
         except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
             pass
     return False
+
 #结束进程(通过进程名)
 def kill_process(process_name):
     try:
@@ -94,25 +78,26 @@ def kill_process(process_name):
     except:
         logging.error(f"结束进程{process_name}失败")
         return False
+
 #仿真操作
-def process(image_path,timeout,control,confidence=0.95,more_control_time=0,more_control_sleep=0):
+def process(image_path, timeout, control, confidence = 0.95, more_control_time = 0, more_control_sleep = 0):
     start_time=time.time()
     image=image_path
     logging.debug(f"开始查找{image_path}，目标{control}，最高超时时间{timeout}秒")
     while True:
         try:
             location=pyautogui.center(pyautogui.locateOnScreen(Image.open(image),confidence=confidence))
-            if control=='click':
+            if control == 'click':
                 pyautogui.click(location)
-                while more_control_time>0:
+                while more_control_time > 0:
                     time.sleep(more_control_sleep)
-                    more_control_time-=1
+                    more_control_time -= 1
                     pyautogui.click(location)
-            elif control=='move':
+            elif control == 'move':
                 pyautogui.moveTo(location)
-                while more_control_time>0:
+                while more_control_time > 0:
                     time.sleep(more_control_sleep)
-                    more_control_time-=1
+                    more_control_time -= 1
                     pyautogui.moveTo(location)
             logging.debug(f"已找到{image_path}位置并执行{control}")
             return True
@@ -120,96 +105,101 @@ def process(image_path,timeout,control,confidence=0.95,more_control_time=0,more_
             logging.error(f"未找到{image_path}文件")
             return False
         except:
-            if time.time()-start_time>timeout:
+            if time.time()-start_time > timeout:
                 break
     logging.debug(f"未找到{image_path}")
     return False
+
 #月卡领取
 def month_card():
-    if process("image/month_card/monthly_card.png",10,"click",confidence=0.8,more_control_time=1,more_control_sleep=5)==True:
+    if process("image/month_card/monthly_card.png", 10, "click", confidence = 0.8, more_control_time = 1, more_control_sleep = 5) == True:
         logging.info(f"识别到月卡领取界面")
     else:
         logging.error(f"月卡未订阅")
         return False
+    
 #锚点回血
 def tp_recovery():
-    error_time=0
-    while error_time<=30:
+    error_time = 0
+    while error_time <= 30:
         #设置超时时间
-        if error_time==30:
+        if error_time == 30:
             break
         #打开地图
-        elif process("image/tp_recovery/tp_map1.png",0.2,"",confidence=0.9)==False and process("image/tp_recovery/tp_map2.png",0.2,"",confidence=0.9)==False:
+        elif process("image/tp_recovery/tp_map1.png", 0.2, "", confidence = 0.9)==False and process("image/tp_recovery/tp_map2.png", 0.2 ,"" ,confidence = 0.9) == False:
             logging.info(f"打开地图")
             pyautogui.typewrite("m")
             time.sleep(1.5)
         #终末视界关闭
-        elif process("image/tp_recovery/end_visit.png",0.2,"click",confidence=0.9)==True:
+        elif process("image/tp_recovery/end_visit.png", 0.2, "click", confidence = 0.9) == True:
             logging.info(f"关闭终末视界")
         #有可用锚点
-        elif process("image/tp_recovery/tp_place.png",0.2,"click",confidence=0.9)==True:
+        elif process("image/tp_recovery/tp_place.png", 0.2, "click", confidence = 0.9) == True:
             logging.info(f"有可用锚点")
         #传送
-        elif process("image/tp_recovery/tp.png",0.2,"click",confidence=0.9)==True:
+        elif process("image/tp_recovery/tp.png", 0.2, "click", confidence = 0.9) == True:
             logging.info(f"传送")
             return True
         #选择罗浮地图
-        elif process("image/tp_recovery/luofu.png",0.2,"click",confidence=0.9)==True:
+        elif process("image/tp_recovery/luofu.png", 0.2, "click", confidence = 0.9) == True:
             logging.info(f"选择罗浮地图")
             time.sleep(3)
         #选择长乐天
-        elif process("image/tp_recovery/clt.png",0.2,"click",confidence=0.9)==True:
+        elif process("image/tp_recovery/clt.png", 0.2, "click", confidence = 0.9) == True:
             logging.info(f"选择长乐天")
             time.sleep(1)
         #打开星轨地图
-        elif process("image/tp_recovery/star_map1.png",0.2,"click",confidence=0.9)==True or process("image/tp_recovery/star_map2.png",0.2,"click",confidence=0.9)==True:
+        elif process("image/tp_recovery/star_map1.png", 0.2, "click", confidence = 0.9) == True or process("image/tp_recovery/star_map2.png", 0.2, "click", confidence = 0.9) == True:
             logging.info(f"打开星轨地图")
             time.sleep(3)
     return False
+
 #运行三月七助手前操作
 def pre_march7th():
-    error_time=0
+    error_time = 0
     while True:
-        if error_time>=60:
+        if error_time >= 60:
             logging.error(f"运行三月七助手前操作超时")
             return False
-        elif process("image/pre_march7th/monthly_card.png",0.5,""):
+        elif process("image/pre_march7th/monthly_card.png" ,0.5, ""):
             logging.info(f"已订阅月卡，正在领取")
             month_card()
-        elif process("image/pre_march7th/mobile.png",0.5,"") or process("image/pre_march7th/mobile_red.png",0.5,""):
+        elif process("image/pre_march7th/mobile.png", 0.5, "") or process("image/pre_march7th/mobile_red.png", 0.5, ""):
             logging.info(f"已进入游戏页面")
-            if get_config("tp_recovery")==True:
+            if get_config("tp_recovery") == True:
                 logging.info(f"开始锚点回血")
                 tp_recovery()
             return True
         else:
-            error_time+=1
+            error_time += 1
+
 #运行三月七助手后操作
 def end_march7th(id,state):
-    if state=="完成":
-        mark_over_account(id,"完成")
+    if state == "完成":
+        mark_over_account(id, "完成")
         kill_process("March7th Assistant.exe")
         kill_process("PaddleOCR-json.exe")
     elif state=="超时":
-        mark_over_account(id,"超时")
+        mark_over_account(id, "超时")
         kill_process("StarRail.exe")
         kill_process("March7th Assistant.exe")
         kill_process("PaddleOCR-json.exe")
     elif state=="顶号":
-        mark_over_account(id,"顶号")
+        mark_over_account(id, "顶号")
         kill_process("StarRail.exe")
         kill_process("March7th Assistant.exe")
         kill_process("PaddleOCR-json.exe")
+
 #自动更新游戏
 def main_game_auto_update():
     logging.info("---------------------------------游戏自动更新------------------------------------------")
     try:
         #获取启动器路径并打开
-        mhy_launcher_path=get_config("mhy_launcher_path")
-        if mhy_launcher_path==None:
+        mhy_launcher_path = get_config("mhy_launcher_path")
+        if mhy_launcher_path == None:
             logging.error(f"米哈游启动器路径[{mhy_launcher_path}]未设置")
             return False
-        os.startfile(str(mhy_launcher_path)+"launcher.exe")
+        os.startfile(mhy_launcher_path)
     except FileNotFoundError:
         logging.error(f"米哈游启动器路径[{mhy_launcher_path}]未设置或设置错误")
     except Exception as error_exception:
@@ -229,8 +219,8 @@ def main_game_auto_update():
     else:
         logging.info("米哈游启动器已经是最新版本了")
     #开始检测更新
-    if process("image/launcher/game_icro.png",3,"click")==True:
-        logging.info(f"切换至崩铁板块")
+    if process("image/launcher/game_icro.png",3,"click",confidence=0.75)==True:
+        logging.info(f"已切换至崩铁板块")
     else:
         logging.error(f"无法切换至崩铁板块")
         return False
@@ -308,12 +298,14 @@ def main_game_auto_update():
     else:
         logging.error(f"游戏已经是最新版本了,无需更新!")
         return False
+    
 #多账户模式
 def main_switch_account():
     logging.info("------------------------------开始多账号模式---------------------------------------")
-    file=pandas.read_excel("account.xlsx")
-    file=check_date(file)
+    check_date()
+    file=pandas.read_excel('account.xlsx')
     for id in range(len(file)):
+        logging.info(f"++++++++++++++++++++分割线++++++++++++++++++++")
         error_time=0
         logging.info(f"已经完成{id}个账号")
         logging.info(f"当前账号为第{id+1}个账号")
@@ -321,9 +313,13 @@ def main_switch_account():
         account=str(file.at[id,"账号"])
         password=str(file.at[id,"密码"])
         logging.info(f"账号{account}")
-        logging.info(f"密码{password}")
+        logging.info(f"密码{password[0:3]}***{password[-3:]}")
+        if pandas.notna(file.at[id, nowtime()]):
+            logging.info(f"该账户今日已经运行过了，跳过")
+            continue
         #启动游戏
-        os.startfile(str(get_config("StarRail_path"))+"StarRail.exe")
+        logging.info(f"启动游戏中......")
+        os.startfile(get_config("StarRail_path"))
         time.sleep(20)
         #退出账号与转到登录页面
         while error_time<=60:
@@ -376,7 +372,7 @@ def main_switch_account():
             elif process("image/more_account_mode/enter.png",0.2,"click")==True:
                 error_time=0
                 logging.info(f"进入游戏")
-                mark_over_account(id,"登录成功")
+                mark_over_account(id,str("登录成功"))
                 break
             elif process("image/more_account_mode/game_in_start.png",0.2,"click")==True:
                 error_time=0
@@ -388,29 +384,30 @@ def main_switch_account():
         #切换用户设置
         logging.info(f"切换用户设置")
         user_config_path=os.path.join(os.getcwd(),"user_config",f"{account}.yaml")
-        new=os.path.join(get_config("March7thAssistant_path"), "config.yaml")
+        new=os.path.join(os.path.dirname(get_config("March7thAssistant_path")), "config.yaml")
         logging.debug(f"准备复制{account}.yaml到三月七助手目录")
         shutil.copy(user_config_path,new)
         logging.debug(f"完成")
         #开始运行三月七助手
         start_time=time.time()
         timeout=int(get_config("timeout"))
-        os.startfile(str(get_config("March7thAssistant_path"))+"March7th Assistant.exe")
+        os.startfile(get_config("March7thAssistant_path"))
         while time.time()-start_time<=timeout:
             if find_process("StarRail.exe")==False:
                 logging.info(f"完成任务")
-                end_march7th(id,"完成")
+                end_march7th(id,str("完成"))
                 break
             elif process("image/more_account_mode/login_other_device.png",1,"")==True:
                 logging.info(f"当前账号在其他设备登录")
-                end_march7th(id,"顶号")
+                end_march7th(id,str("顶号"))
                 break
             else:
                 time.sleep(10)
         else:
             logging.info(f"运行超时")
-            end_march7th(id,"超时")
+            end_march7th(id,str("超时"))
     logging.info(f"------------------------------------------------")
+
 #主程序
 if __name__ == "__main__":
     #设置日志等级
@@ -420,6 +417,24 @@ if __name__ == "__main__":
         logging.getLogger().setLevel(logging.INFO)
     else:
         logging.error("日志等级设置错误")
+    #检测游戏分辨率
+    revice_flag = False
+    original_data = {
+        "width": reg_handler.read_reg_jsondata(winreg.HKEY_CURRENT_USER, r"Software\miHoYo\崩坏：星穹铁道", "GraphicsSettings_PCResolution_h431323223", "width"),
+        "height": reg_handler.read_reg_jsondata(winreg.HKEY_CURRENT_USER, r"Software\miHoYo\崩坏：星穹铁道", "GraphicsSettings_PCResolution_h431323223", "height"),
+        "isFullScreen": reg_handler.read_reg_jsondata(winreg.HKEY_CURRENT_USER, r"Software\miHoYo\崩坏：星穹铁道", "GraphicsSettings_PCResolution_h431323223", "isFullScreen"),
+        "HDR": reg_handler.read_reg_data(winreg.HKEY_CURRENT_USER, r"Software\Microsoft\DirectX\UserGpuPreferences", get_config("StarRail_path"))
+    }
+    logging.info(f"当前游戏分辨率{original_data["width"]}X{original_data["height"]}")
+    logging.info(f"全屏模式{'开' if original_data['isFullScreen'] == True else '关'}")
+    logging.info(f"HDR模式{'开' if original_data['HDR'] == "AutoHDREnable=2097;" else '关' if original_data['HDR'] == "AutoHDREnable=2096;" else '未设定'}")
+    if original_data["width"] != 1920 or original_data["height"] != 1080 or original_data["isFullScreen"] == True or original_data["HDR"] == "AutoHDREnable=2097;":
+        logging.info("检测到游戏画质设置不正确，正在修改（运行完成后会恢复）")
+        reg_handler.write_reg_jsondata(winreg.HKEY_CURRENT_USER, r"Software\miHoYo\崩坏：星穹铁道", "GraphicsSettings_PCResolution_h431323223", "width", 1920)
+        reg_handler.write_reg_jsondata(winreg.HKEY_CURRENT_USER, r"Software\miHoYo\崩坏：星穹铁道", "GraphicsSettings_PCResolution_h431323223", "height", 1080)
+        reg_handler.write_reg_jsondata(winreg.HKEY_CURRENT_USER, r"Software\miHoYo\崩坏：星穹铁道", "GraphicsSettings_PCResolution_h431323223", "isFullScreen", False)
+        reg_handler.write_reg_data(winreg.HKEY_CURRENT_USER, r"Software\Microsoft\DirectX\UserGpuPreferences", get_config("StarRail_path"), "AutoHDREnable=2096;")
+        revice_flag = True
     #游戏自动更新部分
     if  get_config("game_auto_update")==True:
         logging.info("游戏自动更新设置为开启")
@@ -438,6 +453,12 @@ if __name__ == "__main__":
     else:
         logging.error("账号运行类别错误")
     #完成后操作
+    if revice_flag == True:
+        logging.info(f"正在恢复原分辨率设置")
+        reg_handler.write_reg_jsondata(winreg.HKEY_CURRENT_USER, r"Software\miHoYo\崩坏：星穹铁道", "GraphicsSettings_PCResolution_h431323223", "width", original_data["width"])
+        reg_handler.write_reg_jsondata(winreg.HKEY_CURRENT_USER, r"Software\miHoYo\崩坏：星穹铁道", "GraphicsSettings_PCResolution_h431323223", "height", original_data["height"])
+        reg_handler.write_reg_jsondata(winreg.HKEY_CURRENT_USER, r"Software\miHoYo\崩坏：星穹铁道", "GraphicsSettings_PCResolution_h431323223", "isFullScreen", original_data["isFullScreen"])
+        reg_handler.write_reg_data(winreg.HKEY_CURRENT_USER, r"Software\Microsoft\DirectX\UserGpuPreferences", get_config("StarRail_path"), original_data["HDR"])
     if get_config("over_control")=="poweroff":
         logging.info("60秒后关机")
         time.sleep(60)
