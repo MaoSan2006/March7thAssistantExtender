@@ -71,8 +71,8 @@ def switch_account():
                 logger.info(f"输入账号中")
                 pyperclip.copy(account)
                 pyautogui.hotkey('ctrl', 'v')
-            elif auto_process_handler.click("image/more_account_mode/password.png", 0.5) == True:
-                error_time=0
+                time.sleep(1)
+                auto_process_handler.click("image/more_account_mode/password.png", 0.5)
                 logger.info(f"输入密码中")
                 pyperclip.copy(password)
                 pyautogui.hotkey('ctrl', 'v')

@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 print("+----------------------------------------------------------------------------------------------------------------------+")
-print("|                                                版本V2025.05.07                                                       |")
 print("|                                       欢迎使用 March7th Assistant Extender                                           |")
 print("|                          March7thAssistant链接：https://github.com/moesnow/March7thAssistant                         |")
 print("|                March7thAssistantExtender链接：https://github.com/MaoSan2006/March7thAssistantExtender                |")
