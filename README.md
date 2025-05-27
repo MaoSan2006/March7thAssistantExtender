@@ -28,4 +28,3 @@
 # 有不足之处？
 - 毕竟我也只是个学生，没有经过专业训练，所以程序会有一点BUG，谅解一下
 - [`Issues`](https://github.com/MaoSan2006/March7thAssistantExtender/issues)可以提出你的疑问或优化建议
-- 或者，你可以直接联系我【微信号:`zcj1653948415` | QQ号:`1653948415`】
