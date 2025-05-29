@@ -13,6 +13,8 @@ import time
 import logging
 import shutil
 import pyperclip
+import win32gui
+import win32con
 
 logger = logging.getLogger("switch_account_handler")
 
@@ -40,6 +42,13 @@ def switch_account():
         else:
             logger.info(f"启动游戏中......")
             os.startfile(config_handler("StarRail_path"))
+            hwnd = win32gui.FindWindow(None, "崩坏：星穹铁道")
+            if hwnd != 0:
+                # 使窗口显示在最前面
+                win32gui.ShowWindow(hwnd, win32con.SW_SHOWNORMAL)
+                win32gui.SetForegroundWindow(hwnd)
+            else:
+                logger.warning("未找到 StarRail.exe 窗口")
         time.sleep(20)
         #退出账号与转到登录页面
         while error_time<=60:

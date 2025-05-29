@@ -1,4 +1,3 @@
-from venv import logger
 import pyautogui
 import time
 import logging

@@ -1,5 +1,5 @@
 #关键设置
-version :  "V2025.05.08" #版本号
+version :  "V2025.05.27Beta" #版本号
 log_level : "DEBUG" #日志等级[详细DEBUG/简略INFO]
 #路径设置(必须设置)
 March7thAssistant_path : D:\StarRailTools\March7thAssistant\March7th Assistant.exe #三月七助手控制台所在路径
