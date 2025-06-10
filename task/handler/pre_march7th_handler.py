@@ -17,7 +17,7 @@ def pre_march7th_handler():
             monthly_card()
         elif auto_process_handler.not_process("image/pre_march7th/mobile.png", 0.5) or auto_process_handler.not_process("image/pre_march7th/mobile_red.png", 0.5):
             logging.info(f"已进入游戏页面")
-            if config_handler("tp_recovery") == True:
+            if config_handler.read("tp_recovery") == True:
                 logging.info(f"开始锚点回血")
                 tp_recovery()
             return True

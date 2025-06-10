@@ -11,7 +11,7 @@ def game_auto_update():
     logger.info("---------------------------------游戏自动更新------------------------------------------")
     try:
         #获取启动器路径并打开
-        mhy_launcher_path = config_handler("mhy_launcher_path")
+        mhy_launcher_path = config_handler.read("mhy_launcher_path")
         if mhy_launcher_path == None:
             logger.error(f"米哈游启动器路径[{mhy_launcher_path}]未设置")
             return False
@@ -80,7 +80,7 @@ def game_auto_update():
             elif auto_process_handler.click("image/game_auto_update/game_start.png", 0.2)==True:
                 error_time=0
                 logger.info(f"游戏更新完成，开始游戏内更新")
-                os.startfile(config_handler("StarRail_path"))
+                os.startfile(config_handler.read("StarRail_path"))
                 time.sleep(20)
                 break
             else:

@@ -21,7 +21,7 @@ print("运行库加载完成")
 #设置日志格式
 log_file_path = os.path.join("log", nowtime()+ ".log")
 logging.basicConfig(
-    level=logging.INFO if config_handler("log_level") == "DEBUG" else logging.DEBUG,
+    level=logging.INFO if config_handler.read("log_level") == "DEBUG" else logging.DEBUG,
     format='%(asctime)s | %(levelname)s | %(message)s',
     handlers=[
         logging.StreamHandler(),
@@ -33,9 +33,9 @@ logging.getLogger('PIL').setLevel(logging.WARNING)
 if __name__ == "__main__":
     #更新检查
     from task.handler.check_update_handler import check_update
-    if config_handler("check_update") == True:
+    if config_handler.read("check_update") == True:
         check_update.check_update()
-    elif config_handler("check_update") == False:
+    elif config_handler.read("check_update") == False:
         logging.info("更新检查已关闭")
     else:
         logging.error("配置文件错误：更新检查")
@@ -62,21 +62,21 @@ if __name__ == "__main__":
         reg_handler.write_reg_jsondata(winreg.HKEY_CURRENT_USER, r"Software\miHoYo\崩坏：星穹铁道", "GraphicsSettings_PCResolution_h431323223", "isFullScreen", False)
         reg_handler.write_reg_data(winreg.HKEY_CURRENT_USER, r"Software\Microsoft\DirectX\UserGpuPreferences", os.path.normcase(config_handler("StarRail_path")), "AutoHDREnable=2096;")
     #游戏更新检查
-    if config_handler("game_auto_update") == True:
+    if config_handler.read("game_auto_update") == True:
         logging.info("游戏更新检查已开启")
         from task.game_task.game_auto_update import game_auto_update
         game_auto_update()
-    elif config_handler("game_auto_update") == False:
+    elif config_handler.read("game_auto_update") == False:
         logging.info("游戏更新检查已关闭")
     else:
         logging.error("配置文件错误：游戏更新检查")
         sys.exit()
     #运行账号类别
-    if config_handler("account_mode") == True:
+    if config_handler.read("account_mode") == True:
         logging.info("运行账号类别：多账号")
         from task.game_task.switch_account import switch_account
         switch_account()
-    elif config_handler("account_mode") == False:
+    elif config_handler.read("account_mode") == False:
         logging.info("运行账号类别：单账号")
         logging.warning("需要提前登录账号")
         logging.warning("还在测试中，可能存在较多问题，也可使用多账户模式运行")
@@ -92,7 +92,7 @@ if __name__ == "__main__":
         reg_handler.write_reg_jsondata(winreg.HKEY_CURRENT_USER, r"Software\miHoYo\崩坏：星穹铁道", "GraphicsSettings_PCResolution_h431323223", "height", originally_quality["height"])
         reg_handler.write_reg_jsondata(winreg.HKEY_CURRENT_USER, r"Software\miHoYo\崩坏：星穹铁道", "GraphicsSettings_PCResolution_h431323223", "isFullScreen", originally_quality["isFullScreen"])
         reg_handler.write_reg_data(winreg.HKEY_CURRENT_USER, r"Software\Microsoft\DirectX\UserGpuPreferences", os.path.normcase(config_handler("StarRail_path")), originally_quality["HDR"])
-    if config_handler("over_control") == "poweroff":
+    if config_handler.read("over_control") == "poweroff":
         logging.info(f"将在1分钟后关机")
         time.sleep(60)
         os.system("shutdown /s /t 1")

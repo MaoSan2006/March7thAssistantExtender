@@ -41,7 +41,7 @@ def switch_account():
             logger.debug("游戏已经运行，跳过")
         else:
             logger.info(f"启动游戏中......")
-            os.startfile(config_handler("StarRail_path"))
+            os.startfile(config_handler.read("StarRail_path"))
             hwnd = win32gui.FindWindow(None, "崩坏：星穹铁道")
             if hwnd != 0:
                 # 使窗口显示在最前面
@@ -115,11 +115,11 @@ def switch_account():
         #切换用户设置
         logger.info(f"切换用户设置")
         user_config_path = os.path.join(os.getcwd(), "user_config", f"{account}.yaml")
-        new = os.path.join(os.path.dirname(config_handler("March7thAssistant_path")), "config.yaml")
+        new = os.path.join(os.path.dirname(config_handler.read("March7thAssistant_path")), "config.yaml")
         logger.debug(f"准备复制{account}.yaml到三月七助手目录")
         shutil.copy(user_config_path,new)
         logger.debug(f"复制完成，正在拉起三月七助手")
-        os.startfile(config_handler("March7thAssistant_path"))
+        os.startfile(config_handler.read("March7thAssistant_path"))
         #开始运行三月七助手
         mid_march7th_handler(id)
     logger.info(f"------------------------------------------------")

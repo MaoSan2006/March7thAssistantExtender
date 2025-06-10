@@ -1,4 +1,3 @@
-from socket import timeout
 from task.handler import process_handler
 from task.handler.auto_process_handler import auto_process_handler
 from task.handler.config_handler import config_handler

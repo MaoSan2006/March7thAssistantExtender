@@ -8,9 +8,7 @@ with redirect_stdout(None):
     from qfluentwidgets import FluentIcon as FIF
 
 from app.home_interface import HomeInterface
-
-from task.handler.config_handler import config_handler
-import base64,time
+from app.function_interface import FunctionInterface
 
 class MainWindow(MSFluentWindow):
     def __init__(self):
@@ -54,7 +52,7 @@ class MainWindow(MSFluentWindow):
     def initInterface(self):
         self.homeInterface = HomeInterface(self)
         #self.accountInterface = AccountInterface(self)
-        #self.functionInterface = FunctionInterface(self)
+        self.functionInterface = FunctionInterface(self)
         #self.runInterface = RunInterface(self)
     def initNavigation(self): #左列导航栏
         #上半部分
@@ -66,13 +64,16 @@ class MainWindow(MSFluentWindow):
             FIF.ROBOT,
             self.tr("账号管理")
             )
+        '''
         self.addSubInterface(self.functionInterface,
             FIF.SETTING,
             self.tr("功能")
             )
         #下半部分
+        '''
         self.addSubInterface(self.runInterface,
             FIF.PLAY,
             self.tr("运行")
-            )'''
+            )
+        '''
         

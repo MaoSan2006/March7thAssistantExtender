@@ -10,7 +10,7 @@ import time
 logger = logging.getLogger("mid_march7th_handler")
 
 def mid_march7th_handler(id):
-    timeout = config_handler("timeout")
+    timeout = config_handler.read("timeout")
     start_time = time.time()
     while time.time() - start_time <= timeout:
         if process_handler.find_process("StarRail.exe")==False:

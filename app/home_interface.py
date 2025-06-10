@@ -32,7 +32,7 @@ class BannerWidget(QWidget):
         linkCardLayout = QHBoxLayout() # 水平布局
 
         # 设置标签样式与内容
-        self.galleryLabel = QLabel(f'三月七小助手拓展包 {config_handler("version")}\nMarch7thAssistantExtender', self) # 创建标签
+        self.galleryLabel = QLabel(f'三月七小助手拓展包 {config_handler.read("version")}\nMarch7thAssistantExtender', self) # 创建标签
         self.galleryLabel.setStyleSheet("color: white;font-size: 30px; font-weight: 600;")
 
         # 创建阴影效果
@@ -123,4 +123,12 @@ class HomeInterface(ScrollArea):
         self.changelogBrowser = QTextBrowser(self)
         with open('app/resource/customize/text/UpdateLog.html', 'r', encoding='utf-8') as f:
             self.changelogBrowser.setHtml(f.read())
+        # 添加样式表设置
+        self.changelogBrowser.setStyleSheet("""
+            QTextBrowser {
+                background-color: transparent;
+                border: none;
+                color: white;
+            }
+        """)
         self.vBoxLayout.addWidget(self.changelogBrowser)

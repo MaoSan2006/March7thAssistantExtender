@@ -16,4 +16,10 @@ BannerWidget > #galleryLabel {
     padding-left: 28px;
 }
 
+QTextBrowser {
+    background-color: transparent;
+    border: none;
+    color: black;
+}
+
 

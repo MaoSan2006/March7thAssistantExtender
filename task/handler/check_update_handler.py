@@ -16,7 +16,7 @@ class check_update:
             )
             if response.status_code == 200:
                 latest_version = response.json()["tag_name"]
-                if latest_version > config_handler("version"):
+                if latest_version > config_handler.read("version"):
                     logger.info(f"发现新版本：{latest_version}")
                     return True
                 else:
