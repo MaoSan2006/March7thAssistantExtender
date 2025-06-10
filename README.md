@@ -1,6 +1,7 @@
 # March7thAssistantExtender(三月七助手拓展包)
 - 本程序作为[三月七助手(March7thAssistant)](https://github.com/moesnow/March7thAssistant)的拓展包
 - 需要下载原版并在本程序的`comfig.yaml`里进行设置绑定路径
+- 换设备了，还在修补环境(下载是真的慢啊)
 # 怎么使用
 - [下载最新版本](https://github.com/MaoSan2006/March7thAssistantExtender/releases)
 - 解压到电脑上
@@ -19,14 +20,12 @@
 * [x] 更新检查
 * [x] 以非HDR+1080P启动游戏 
 * [x] 默认以管理员身份运行
-* [ ] 自动改为英文输入
 * [ ] 日志输入类别显示颜色
 * [ ] 自动检测相关应用是否前置
 * [x] 功能模块化
 * [ ] 自定义Webhook通知
-* [ ] 数据库存储+GUI设置
+* [ ] 数据库存储+GUI设置(20250526开发进度：20％)
 * [ ] 错误页面截图
 # 有不足之处？
 - 毕竟我也只是个学生，没有经过专业训练，所以程序会有一点BUG，谅解一下
 - [`Issues`](https://github.com/MaoSan2006/March7thAssistantExtender/issues)可以提出你的疑问或优化建议
-- 或者，你可以直接联系我【微信号:`zcj1653948415` | QQ号:`1653948415`】
