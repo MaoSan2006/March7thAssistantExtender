@@ -1,7 +1,7 @@
 # March7thAssistantExtender(三月七助手拓展包)
 - 本程序作为[三月七助手(March7thAssistant)](https://github.com/moesnow/March7thAssistant)的拓展包
 - 需要下载原版并在本程序的`comfig.yaml`里进行设置绑定路径
-- 换设备了，还在修补环境(下载是真的慢啊)
+- 需要设置缩放到100%
 # 怎么使用
 - [下载最新版本](https://github.com/MaoSan2006/March7thAssistantExtender/releases)
 - 解压到电脑上
