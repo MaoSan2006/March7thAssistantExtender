@@ -1,7 +1,7 @@
 # March7thAssistantExtender(三月七助手拓展包)
 - 本程序作为[三月七助手(March7thAssistant)](https://github.com/moesnow/March7thAssistant)的拓展包
 - 需要下载原版并在本程序的`comfig.yaml`里进行设置绑定路径
-- 需要设置缩放到100%
+- 需要提前设置缩放大小：设置-系统-屏幕-缩放(100%) 以Windows11为例
 # 怎么使用
 - [下载最新版本](https://github.com/MaoSan2006/March7thAssistantExtender/releases)
 - 解压到电脑上
@@ -11,6 +11,8 @@
 - 把上面的`config.yaml`复制到本应用的`user_config`中并重命名为`账号.yaml`（例如账号是123@email.com，就重命名为123@email.com.yaml）
 - 运行`March7thAssistantExtender.exe`
 # 项目后续更新计划及其已有功能
+## 重大更新说明 ##
+* 目前的文件结构太乱了，准备重新设计文件结构，工程量比较大
 ## 游戏部分 ##
 * [X] 游戏自动更新
 * [x] 单账户/多账户模式
@@ -24,7 +26,7 @@
 * [ ] 自动检测相关应用是否前置
 * [x] 功能模块化
 * [ ] 自定义Webhook通知
-* [ ] 数据库存储+GUI设置(20250526开发进度：20％)
+* [ ] 数据库存储+GUI设置(20250619开发进度：30％)
 * [ ] 错误页面截图
 # 有不足之处？
 - 毕竟我也只是个学生，没有经过专业训练，所以程序会有一点BUG，谅解一下
