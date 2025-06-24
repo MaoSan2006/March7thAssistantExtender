@@ -1,3 +1,5 @@
+## 道歉
+抱歉哈各位，因为崩铁给我的印象越来越差，我实在没有多少精力和兴趣去开发了，这个项目估计以后会更新的比较慢，希望大家能多多包涵一下，谢谢各位了！
 # March7thAssistantExtender(三月七助手拓展包)
 - 本程序作为[三月七助手(March7thAssistant)](https://github.com/moesnow/March7thAssistant)的拓展包
 - 需要下载原版并在本程序的`comfig.yaml`里进行设置绑定路径
